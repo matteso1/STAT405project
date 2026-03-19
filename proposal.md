@@ -13,6 +13,9 @@ We will use the "Russia-Ukraine Conflict Twitter Dataset" from Kaggle (https://w
 ```python
 tweets = pd.read_csv("UkraineCombinedTweetsDeworworded.csv")
 ```
+```r
+tweets <- read.csv("UkraineCombinedTweetsDeworworded.csv")
+```
 
 ## Variables
 
@@ -24,7 +27,7 @@ We will use time-series regression to model daily average sentiment as a functio
 
 ## Computational Steps
 
-We will split the dataset by date range into chunks and distribute sentiment scoring jobs across CHTC using HTCondor. Each job downloads its assigned chunk, computes sentiment scores using the VADER or TextBlob library, and outputs summary statistics. A final aggregation job combines results for modeling and visualization.
+We will split the dataset by date range into chunks and distribute sentiment scoring jobs across CHTC using HTCondor. Each job downloads its assigned chunk, computes sentiment scores using Python (VADER/TextBlob) or R (tidytext/syuzhet), and outputs summary statistics. A final aggregation job combines results for modeling and visualization.
 
 ## Repository
 
