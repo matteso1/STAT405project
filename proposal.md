@@ -22,7 +22,9 @@ tweets <- read.csv("UkraineCombinedTweetsDeworworded.csv")
 #Load directly from Kaggle in Python
 import kagglehub
 from kagglehub import KaggleDatasetAdapter
-tweets = kagglehub.dataset_load(KaggleDatasetAdapter.PANDAS, "bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows", "0819_UkraineCombinedTweetsDeduped.csv",)
+tweets = kagglehub.dataset_load(KaggleDatasetAdapter.PANDAS,
+"bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows",
+"0819_UkraineCombinedTweetsDeduped.csv",)
 ```
 ## Variables
 
