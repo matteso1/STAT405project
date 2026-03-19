@@ -18,7 +18,8 @@ tweets = pd.read_csv("UkraineCombinedTweetsDeworworded.csv")
 # R
 tweets <- read.csv("UkraineCombinedTweetsDeworworded.csv")
 ```
-```
+
+```python
 #Load directly from Kaggle in Python
 import kagglehub
 from kagglehub import KaggleDatasetAdapter
