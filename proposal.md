@@ -18,7 +18,12 @@ tweets = pd.read_csv("UkraineCombinedTweetsDeworworded.csv")
 # R
 tweets <- read.csv("UkraineCombinedTweetsDeworworded.csv")
 ```
-
+```
+#Load directly from Kaggle in Python
+import kagglehub
+from kagglehub import KaggleDatasetAdapter
+tweets = kagglehub.dataset_load(KaggleDatasetAdapter.PANDAS, "bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows", "0819_UkraineCombinedTweetsDeduped.csv",)
+```
 ## Variables
 
 Each tweet record includes: text content, timestamp (tweetcreatedts), username, user location, followers count, friends count, retweet count, language, and hashtags. We will derive additional variables: a sentiment polarity score (computed via NLP), an event indicator linking each tweet's date to a timeline of major war events, and a bot-likelihood flag based on account activity patterns.
