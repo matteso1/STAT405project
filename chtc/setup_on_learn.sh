@@ -4,7 +4,7 @@
 #
 # What it does:
 #   1. Builds the Apptainer container from chtc/container.def
-#   2. Downloads the Kaggle dataset to /staging/groups/STAT_DSCP/stat405_grp7/data
+#   2. Downloads the Kaggle dataset to /staging/nomatteson/data
 #   3. Writes file_list.txt listing every CSV
 #   4. Creates log/ error/ output/ directories
 #   5. Copies score_tweets.py, aggregate.py, analyze.py, events.csv
@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-STAGING_DIR="/staging/groups/STAT_DSCP/stat405_grp7"
+STAGING_DIR="/staging/nomatteson"
 DATA_DIR="${STAGING_DIR}/data"
 SIF="${STAGING_DIR}/stat405_vader.sif"
 

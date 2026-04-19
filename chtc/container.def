@@ -1,9 +1,9 @@
 # Apptainer definition for the sentiment scoring container.
 # Build on learn.chtc.wisc.edu with:
 #     apptainer build stat405_vader.sif container.def
-# Then upload to /staging/groups/STAT_DSCP/stat405_grp7/ and reference
+# Then upload to /staging/nomatteson/ and reference
 # it from score.sub via
-#     container_image = file:///staging/groups/STAT_DSCP/stat405_grp7/stat405_vader.sif
+#     container_image = file:///staging/nomatteson/stat405_vader.sif
 
 Bootstrap: docker
 From: python:3.11-slim

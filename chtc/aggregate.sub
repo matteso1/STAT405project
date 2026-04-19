@@ -5,7 +5,7 @@
 
 universe      = vanilla
 
-container_image = file:///staging/groups/STAT_DSCP/stat405_grp7/stat405_vader.sif
+container_image = file:///staging/nomatteson/stat405_vader.sif
 requirements    = (HasCHTCStaging == true)
 
 log    =    log/agg_$(Cluster).log

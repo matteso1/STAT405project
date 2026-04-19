@@ -30,11 +30,11 @@ The DAG is defined in `pipeline.dag`; submit with
    *API* → *Create New Token* and `scp kaggle.json learn.chtc.wisc.edu:~/.kaggle/kaggle.json`
 3. `cd STAT405project/chtc && bash setup_on_learn.sh`
    This builds the Apptainer container, pulls the dataset into
-   `/staging/groups/STAT_DSCP/stat405_grp7/data/`, and writes
+   `/staging/nomatteson/data/`, and writes
    `file_list.txt`.
 
 > `/staging` access: if you don't have it, ask the instructor to
-> create `/staging/groups/STAT_DSCP/stat405_grp7/`. As a fallback,
+> create `/staging/nomatteson/`. As a fallback,
 > substitute `/home/groups/STAT_DSCP/stat405_grp7/` in `score.sub`
 > and drop the `HasCHTCStaging` requirement line.
 
