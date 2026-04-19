@@ -1,0 +1,26 @@
+# score_1job.sub -- calibration run: one job on one file, so we can
+# measure CPU/memory/disk usage before submitting hundreds in parallel.
+# (Same shape as HW4a's hw4_1job.sub.)
+
+universe      = vanilla
+
+container_image = file:///staging/groups/STAT_DSCP/stat405_grp7/stat405_vader.sif
+requirements    = (HasCHTCStaging == true)
+
+log    =    log/$(Cluster)_1job.log
+error  =  error/$(Cluster)_1job.err
+output = output/$(Cluster)_1job.out
+
+executable = run_score.sh
+# Pick one real filename here (the biggest one is a safe upper bound).
+arguments  = 0819_UkraineCombinedTweetsDeduped.csv
+
+should_transfer_files    = YES
+when_to_transfer_output  = ON_EXIT
+transfer_input_files     = score_tweets.py, file:///staging/groups/STAT_DSCP/stat405_grp7/data/0819_UkraineCombinedTweetsDeduped.csv
+
+request_cpus   = 1
+request_memory = 4GB
+request_disk   = 5GB
+
+queue 1

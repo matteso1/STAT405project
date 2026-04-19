@@ -1,0 +1,18 @@
+# pipeline.dag -- full three-stage pipeline with DAGMan.
+#
+# stage 1: N parallel scoring jobs (one per daily CSV).
+# stage 2: aggregate + change-point + regression, once, after all scoring finishes.
+#
+# Run with:
+#     condor_submit_dag pipeline.dag
+# Monitor with condor_q or condor_watch_q.
+
+JOB score      score.sub
+JOB aggregate  aggregate.sub
+
+# After every scoring job returns, HTCondor drops *_agg.csv into the
+# submit dir. Collect them into per_file/ so aggregate.sub can ship
+# them to its worker as a single directory.
+SCRIPT POST score collect_per_file.sh
+
+PARENT score CHILD aggregate

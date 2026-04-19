@@ -1,0 +1,23 @@
+# Apptainer definition for the sentiment scoring container.
+# Build on learn.chtc.wisc.edu with:
+#     apptainer build stat405_vader.sif container.def
+# Then upload to /staging/groups/STAT_DSCP/stat405_grp7/ and reference
+# it from score.sub via
+#     container_image = file:///staging/groups/STAT_DSCP/stat405_grp7/stat405_vader.sif
+
+Bootstrap: docker
+From: python:3.11-slim
+
+%post
+    apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates && rm -rf /var/lib/apt/lists/*
+    python3 -m pip install --no-cache-dir --upgrade pip
+    python3 -m pip install --no-cache-dir \
+        pandas==2.2.3 \
+        numpy==2.2.0 \
+        vaderSentiment==3.3.2 \
+        pyarrow==18.1.0
+
+%labels
+    Author STAT 405 Group 7
+    Version 1.0

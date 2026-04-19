@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.ipynb_checkpoints/
+
+# Data (too large to commit; keep small samples)
+data/
+!data/.gitkeep
+!data/*.sample.csv
+results/
+!results/.gitkeep
+
+# Figures (intermediate; checked-in versions go in report/ and presentation/)
+figures/*.png
+figures/*.pdf
+!figures/.gitkeep
+
+# CHTC job outputs (recreated each run)
+chtc/log/
+chtc/output/
+chtc/error/
+chtc/*.log
+chtc/*.sif
+chtc/*.tgz
+
+# Downloaded course reference materials (not our work)
+docs/ref/
+
+# OS / editor cruft
+.DS_Store
+*.swp
+*.swo
+
+
+# Secrets — never commit
+kaggle.json
+.env
+*.pem

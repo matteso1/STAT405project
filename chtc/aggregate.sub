@@ -1,0 +1,26 @@
+# aggregate.sub -- single job that combines every per-file output CSV
+# into daily_pooled.csv and daily_by_language.csv, then runs the
+# change-point + regression analysis. Fast (a few seconds) but we
+# submit it as a Condor job so the whole pipeline can be a single DAG.
+
+universe      = vanilla
+
+container_image = file:///staging/groups/STAT_DSCP/stat405_grp7/stat405_vader.sif
+requirements    = (HasCHTCStaging == true)
+
+log    =    log/agg_$(Cluster).log
+error  =  error/agg_$(Cluster).err
+output = output/agg_$(Cluster).out
+
+executable = run_aggregate.sh
+arguments  =
+
+should_transfer_files    = YES
+when_to_transfer_output  = ON_EXIT
+transfer_input_files     = aggregate.py, analyze.py, events/events.csv, per_file
+
+request_cpus   = 1
+request_memory = 2GB
+request_disk   = 2GB
+
+queue 1
