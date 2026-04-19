@@ -1,0 +1,23 @@
+# download_and_chunk.sub -- one job that downloads the full Kaggle
+# dataset zip and stream-extracts it into ~25 multi-day chunks on
+# /staging, never materializing the 293 daily files individually
+# (the staging filesystem caps at 100 inodes per user).
+
+universe       = vanilla
+executable     = download_and_chunk.sh
+
+log    = chunk.log
+output = chunk.out
+error  = chunk.err
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files    = $ENV(HOME)/.kaggle/kaggle.json
+
+request_cpus   = 1
+request_memory = 4GB
+request_disk   = 80GB
+
+requirements   = (HasCHTCStaging == true)
+
+queue 1
