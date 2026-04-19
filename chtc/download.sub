@@ -22,7 +22,7 @@ when_to_transfer_output = ON_EXIT
 transfer_input_files    = $ENV(HOME)/.kaggle/kaggle.json
 
 request_cpus   = 1
-request_memory = 8GB
+request_memory = 16GB
 request_disk   = 80GB
 
 requirements   = (HasCHTCStaging == true)
