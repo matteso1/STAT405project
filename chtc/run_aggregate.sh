@@ -10,7 +10,7 @@ python3 -m pip install --quiet statsmodels ruptures
 mkdir -p results
 
 python3 aggregate.py per_file --out-dir results
-python3 analyze.py --results-dir results --events events.csv --group en
+python3 analyze.py --results-dir results --events events/events.csv --group en
 
 ls -lh results/
 
