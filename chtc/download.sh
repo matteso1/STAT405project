@@ -1,41 +1,37 @@
 #!/bin/bash
 # download.sh -- one-shot Kaggle dataset download, run as a Condor job.
-# The CHTC login node's ~2GB memory cap kills the kaggle CLI, so we
-# submit this to a worker with more memory instead.
-#
-# Writes the 44 GB dataset into /staging/nomatteson/data/.
+# Streams the zip straight to /staging with curl; tiny memory footprint.
+# (Kaggle's Python SDK buffers the whole response and OOMs on 16GB.)
 set -euo pipefail
 
-python3 -m pip install --user --quiet kaggle
-
-# transfer_input_files ships kaggle.json into $PWD on the worker.
-# Use the Python API directly; the pip-installed kaggle CLI shebang
-# breaks on some workers (gets invoked by bash, not python).
-export KAGGLE_CONFIG_DIR="$PWD"
 chmod 600 kaggle.json
 
-mkdir -p /staging/nomatteson/data
-
-# Step 1: just download the zip. Kaggle's unzip=True path allocates
-# a huge buffer and blew past 8 GB of RAM; streaming unzip below
-# stays tiny.
-python3 - <<'PYEOF'
-from kaggle.api.kaggle_api_extended import KaggleApi
-api = KaggleApi()
-api.authenticate()
-api.dataset_download_files(
-    "bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows",
-    path="/staging/nomatteson/data",
-    unzip=False,
-)
+# Kaggle's dataset-download endpoint takes HTTP Basic auth with
+# username:key from kaggle.json.
+AUTH=$(python3 - <<'PYEOF'
+import json, base64
+c = json.load(open("kaggle.json"))
+print(base64.b64encode(f"{c['username']}:{c['key']}".encode()).decode())
 PYEOF
+)
 
-# Step 2: extract each member to disk; constant memory.
+mkdir -p /staging/nomatteson/data
 cd /staging/nomatteson/data
-ZIP=$(ls *.zip | head -1)
-echo "unzipping ${ZIP} ..."
-unzip -q "${ZIP}"
-rm -f "${ZIP}"
+
+echo "downloading dataset zip ..."
+curl -L --fail --silent --show-error \
+  -H "Authorization: Basic ${AUTH}" \
+  -o dataset.zip \
+  "https://www.kaggle.com/api/v1/datasets/download/bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows"
+ls -lh dataset.zip
+
+echo "unzipping ..."
+python3 - <<'PYEOF'
+import zipfile
+with zipfile.ZipFile("dataset.zip") as z:
+    z.extractall(".")
+PYEOF
+rm -f dataset.zip
 
 echo "download complete:"
 ls | head
