@@ -7,19 +7,26 @@
 set -euo pipefail
 
 python3 -m pip install --user --quiet kaggle
-export PATH="$HOME/.local/bin:$PATH"
 
 # transfer_input_files ships kaggle.json into $PWD on the worker.
+# Use the Python API directly; the pip-installed kaggle CLI shebang
+# breaks on some workers (gets invoked by bash, not python).
 export KAGGLE_CONFIG_DIR="$PWD"
 chmod 600 kaggle.json
 
 mkdir -p /staging/nomatteson/data
-cd /staging/nomatteson/data
 
-kaggle datasets download \
-  -d bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows \
-  --unzip
+python3 - <<'PYEOF'
+from kaggle.api.kaggle_api_extended import KaggleApi
+api = KaggleApi()
+api.authenticate()
+api.dataset_download_files(
+    "bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows",
+    path="/staging/nomatteson/data",
+    unzip=True,
+)
+PYEOF
 
 echo "download complete:"
-ls | head
-du -sh .
+ls /staging/nomatteson/data | head
+du -sh /staging/nomatteson/data
