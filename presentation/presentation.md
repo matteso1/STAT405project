@@ -13,9 +13,9 @@ sentiment of public tweets shift, and for how long?**
 :::
 
 ::: {style="margin-top:1.5em; color:#666;"}
-We score ~52 GB of tweets with VADER on the CHTC cluster, then run
-event-study regressions and change-point detection against a curated
-timeline of 21 major war events.
+We score ~52 GB of tweets (70.9M tweets, 476 days) with VADER on
+the CHTC cluster, then run event-study regressions and change-point
+detection against a curated timeline of 21 major war events.
 :::
 
 ---
@@ -23,8 +23,9 @@ timeline of 21 major war events.
 ## The data
 
 -   **Kaggle**: `bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows`
--   Split into daily CSVs, packed into ~39 multi-day chunks on CHTC
--   **~52 GB total**, covering Feb 2022 to mid-2024
+-   ~480 daily CSVs, packed into 39 multi-day chunks on CHTC
+-   **~52 GB total**, Feb 2022 to mid-2024
+-   After scoring: **70,876,101 tweets across 476 days**
 -   Columns used: `text`, `tweetcreatedts`, `language`,
     `retweetcount`, `followers`
 
@@ -45,7 +46,8 @@ tweets = pd.read_csv("0819_UkraineCombinedTweetsDeduped.csv")
 ::: {style="font-size:0.65em;"}
 -   **Stage 1**: 39 HTCondor jobs in parallel (one per chunk), Apptainer container from `/staging`
 -   **Stage 2**: single DAGMan-linked aggregator
--   [Raw tweets never leave `/staging`; learn stays clean.]{style="color:#c33;"}
+-   **Wall-clock**: ~1h40min end to end (calibration chunk: 7 min; largest chunks: ~50 min)
+-   [Raw tweets never leave `/staging`; `learn` stays clean.]{style="color:#c33;"}
 :::
 
 ---
@@ -59,10 +61,10 @@ Each file produces per-(date, language) sums: `sum(compound)`,
 aggregator compute daily means, variances, and reach-weighting without
 re-reading the raw tweets.
 
-Three analyses on the aggregated time series:
+Three analyses on the daily time series:
 
 1.  **Event study**: Welch's *t* on mean sentiment in a [-7, +7] day
-    window around each event.
+    window around each of 21 events (16 with complete windows).
 2.  **PELT change-point detection** on daily mean compound.
 3.  **OLS regression**: `mean_compound ~ t + log(n_tweets) + event dummies`.
 
@@ -73,7 +75,7 @@ Three analyses on the aggregated time series:
 ![](01_sentiment_timeline.png){width=85%}
 
 ::: {style="font-size:0.55em; color:#666;"}
-Blue = 7-day rolling mean (English); dashed = events; red = detected change-points.
+Blue = 7-day rolling mean (English); dashed = annotated events; red = PELT change-points. Daily mean drifts around -0.05 to -0.10; deepest dips around Bucha (Apr 2022) and Bakhmut (spring 2023).
 :::
 
 ---
@@ -83,12 +85,29 @@ Blue = 7-day rolling mean (English); dashed = events; red = detected change-poin
 ![](02_event_study.png){width=80%}
 
 ::: {style="font-size:0.55em; color:#666;"}
-|t| > 2 detectable; invasion + Azovstal = sharpest dips, Kherson liberation = clearest rebound.
+3 of 16 events pass |t| > 2: **Kharkiv counter-offensive** (+0.036, t=2.65), **Annexation declared** (+0.023, t=2.41), **Bucha revealed** (-0.076, t=-2.25).
 :::
 
 ---
 
-## Result 3: reach weighting
+## Result 3: regression + change-points
+
+::: {style="font-size:0.7em;"}
+**OLS (n=476)**: *R*^2 = 0.092, adj = 0.054, F = 2.44, *p* = 0.0007. Coefficients with |t| > 2:
+
+| Event | beta | p |
+|---|:-:|:-:|
+| Kherson liberated | **+0.119** | 0.006 |
+| Kakhovka dam | **-0.108** | 0.019 |
+| War anniversary | +0.092 | 0.036 |
+| Zelensky at Congress | +0.089 | 0.040 |
+
+**PELT** finds 21 structural breaks; only 2022-12-21 (Zelensky at Congress) aligns with a labeled event.
+:::
+
+---
+
+## Result 4: reach weighting
 
 ![](05_reach_weighted.png){width=85%}
 
@@ -101,9 +120,9 @@ Follower-weighting shifts amplitude, not sign: loudest accounts mirror the media
 ## Takeaways + limitations
 
 ::: {style="font-size:0.72em;"}
-**Found**: invasion drops ~5x the daily SD; t-stats cross 5 sigma on 3 of 21 events; change-point detector catches invasion + Bucha + Kherson unaided.
+**Found**: events explain ~9% of daily variance. Kherson + Kakhovka register with the expected sign in the regression; Bucha is the clearest single-event dip. Most change-points don't match our event list.
 
-**Caveats**: VADER is English-only, so non-English tweets look muted (sensitivity pool reported); correlational only, Twitter is not the public, events cluster.
+**Caveats**: VADER is English-only (non-English looks muted); Durbin-Watson 0.70 means strong autocorrelation (OLS SEs understated); events cluster, so dummies are not clean causal effects; no bot filter.
 
 **Next**: multilingual sentiment (XLM-R), bot filter, RDD around each event.
 :::
