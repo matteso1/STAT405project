@@ -1,23 +1,9 @@
 #!/usr/bin/env python3
-"""
-aggregate.py: Combine per-file sentiment aggregates into a single
-daily time-series. Runs once, after every ``score_tweets.py`` output
-has returned from CHTC.
-
-Input: a directory of per-file CSVs that ``score_tweets.py`` wrote
-       (each has rows keyed by (date, language), carrying sums).
-Output: two CSVs:
-    results/daily_by_language.csv  -- per (date, language) means + sd
-    results/daily_pooled.csv       -- per date, English only + all-languages
-
-The aggregator consumes sufficient statistics (sums, sums-of-squares),
-so it never re-reads raw tweets.
-"""
-from __future__ import annotations
+# Combine per-file sentiment aggregates (from score_tweets.py) into one
+# daily time-series. Runs once after all CHTC scoring jobs return.
 
 import argparse
 import glob
-import math
 import os
 import sys
 
@@ -33,11 +19,10 @@ SUMS = [
 ]
 
 
-def combine(df: pd.DataFrame, groupby: list[str]) -> pd.DataFrame:
+def combine(df, groupby):
     g = df.groupby(groupby, as_index=False)[SUMS].sum()
     n = g["n_tweets"].clip(lower=1)
     g["mean_compound"] = g["sum_compound"] / n
-    # Var(x) = E[x^2] - (E[x])^2; clip to 0 for numerical safety.
     var = (g["sum_sq_compound"] / n) - (g["mean_compound"] ** 2)
     g["sd_compound"] = var.clip(lower=0).pow(0.5)
     g["mean_pos"] = g["sum_pos"] / n
@@ -51,8 +36,7 @@ def combine(df: pd.DataFrame, groupby: list[str]) -> pd.DataFrame:
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("input_dir",
-                   help="Directory of per-file CSVs from score_tweets.py")
+    p.add_argument("input_dir")
     p.add_argument("--out-dir", default="results")
     p.add_argument("--glob", default="*.csv")
     args = p.parse_args()
@@ -83,17 +67,14 @@ def main():
     by_lang.to_csv(os.path.join(args.out_dir, "daily_by_language.csv"),
                    index=False)
 
-    # Pool 1: English only (VADER's home turf).
     en = combine(df[df["language"].str.lower() == "en"], ["date"]).copy()
     en["group"] = "en"
-    # Pool 2: all languages (caveat: VADER undermeasures non-English).
     allp = combine(df, ["date"]).copy()
     allp["group"] = "all"
     pooled = pd.concat([en, allp], ignore_index=True)
     pooled = pooled.sort_values(["group", "date"])
     pooled.to_csv(os.path.join(args.out_dir, "daily_pooled.csv"), index=False)
 
-    # Short summary to stderr so CHTC log captures it.
     n_files = len(paths)
     n_rows = int(df["n_tweets"].sum())
     n_days = by_lang["date"].nunique()

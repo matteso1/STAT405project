@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
-"""
-make_synthetic.py: Generate a small synthetic Russia-Ukraine twitter
-dataset that matches the schema of bwandowando's Kaggle dataset, so the
-pipeline is exercisable without Kaggle credentials.
-
-Writes ``data/synthetic_DDMM.csv`` files (one per day), each ~2-10k
-tweets. Sentiment is deliberately shifted on a few flag dates so the
-downstream event-study plots have something to show.
-
-Usage:
-    python make_synthetic.py --days 120 --tweets-per-day 3000 \
-        --out-dir data/synthetic
-"""
-from __future__ import annotations
+# Make a small fake Russia-Ukraine tweet dataset for testing the pipeline
+# without needing the real Kaggle download. Sentiment is shifted around a
+# few fake "events" so the plots have something to show.
 
 import argparse
 import os
@@ -20,8 +9,6 @@ import random
 from datetime import date, timedelta
 
 
-# Toy phrase pools: a handful of positive, negative, neutral stock
-# sentences. VADER picks up the adjectives/verbs reliably.
 POS = [
     "Incredible courage from Ukrainian defenders today, absolutely heroic!",
     "Great news: grain export deal signed, this saves lives.",
@@ -47,9 +34,8 @@ NEU = [
 LANGS = ["en", "en", "en", "en", "uk", "ru", "pl", "de", "fr", "es"]
 
 
-def tweet_for(day: date, tone_bias: float) -> tuple[str, str]:
+def tweet_for(day, tone_bias):
     r = random.random()
-    # tone_bias shifts the positive/negative mix; 0.5 is balanced.
     if r < 0.33 + (tone_bias - 0.5) * 0.5:
         return random.choice(POS), random.choice(LANGS)
     if r < 0.67 - (tone_bias - 0.5) * 0.5:
@@ -70,17 +56,15 @@ def main():
     os.makedirs(args.out_dir, exist_ok=True)
 
     start = date.fromisoformat(args.start)
-    # Plant a few synthetic "events" that shift sentiment for a window.
     events = {
-        start + timedelta(days=10): ("invasion_start", 0.15),      # big drop
-        start + timedelta(days=45): ("bucha_reveal", 0.10),        # drop
-        start + timedelta(days=90): ("kherson_liberation", 0.85),  # spike
+        start + timedelta(days=10): ("invasion_start", 0.15),
+        start + timedelta(days=45): ("bucha_reveal", 0.10),
+        start + timedelta(days=90): ("kherson_liberation", 0.85),
     }
 
     user_id = 0
     for i in range(args.days):
         d = start + timedelta(days=i)
-        # Decaying window of the nearest event's bias.
         bias = 0.5
         for ed, (_name, target) in events.items():
             gap = (d - ed).days
@@ -98,7 +82,6 @@ def main():
                 rt = random.choices([0, 1, 5, 50, 500], [0.7, 0.15, 0.1, 0.04, 0.01])[0]
                 foll = random.choices([10, 100, 1000, 10000, 1_000_000],
                                       [0.4, 0.3, 0.2, 0.08, 0.02])[0]
-                # Escape quotes minimally; comma-free stock phrases above.
                 text_safe = text.replace('"', "'")
                 fh.write(f"{user_id:012d},{user_id},user_{user_id},{ts},"
                          f"\"{text_safe}\",{lang},{rt},{foll},\"somewhere\"\n")

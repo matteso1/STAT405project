@@ -22,7 +22,7 @@
     <rect x="270" y="250" width="200" height="56" rx="8" fill="#fff5e6" stroke="#cc7a00"/>
     <text x="370" y="284" text-anchor="middle" font-size="13">score_tweets.py (worker N)</text>
   </g>
-  <text x="370" y="44" text-anchor="middle" font-size="14" font-weight="600" fill="#333">stage 1 — HTCondor parallel</text>
+  <text x="370" y="44" text-anchor="middle" font-size="14" font-weight="600" fill="#333">stage 1 , HTCondor parallel</text>
 
   <!-- per-file outputs -->
   <rect x="520" y="140" width="150" height="80" rx="8" fill="#eaf5ea" stroke="#2a7a2a"/>
@@ -34,7 +34,7 @@
   <text x="795" y="168" text-anchor="middle" font-size="13" font-weight="600">aggregate + analyze</text>
   <text x="795" y="186" text-anchor="middle" font-size="12" fill="#555">change-points · OLS</text>
   <text x="795" y="204" text-anchor="middle" font-size="12" fill="#555">event study</text>
-  <text x="795" y="44"  text-anchor="middle" font-size="14" font-weight="600" fill="#333">stage 2 — 1 job, DAGMan-linked</text>
+  <text x="795" y="44"  text-anchor="middle" font-size="14" font-weight="600" fill="#333">stage 2 , 1 job, DAGMan-linked</text>
 
   <!-- arrows staging -> workers -->
   <line x1="190" y1="180" x2="260" y2="88"  stroke="#444" stroke-width="1.5" marker-end="url(#arrow)"/>

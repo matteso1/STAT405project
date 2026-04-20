@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""
-visualize.py: Produce the figures the slides and report depend on.
-
-Outputs to ``figures/`` as 300-dpi PNGs (for slides) plus PDFs (for
-report inclusion). All plots use a neutral, print-legible style.
-"""
-from __future__ import annotations
+# Build the figures used in the slides and report. Outputs go to figures/.
 
 import argparse
 import os
@@ -126,14 +120,12 @@ def fig_volume_vs_sentiment(daily, out_dir):
 def fig_language_heatmap(by_lang, out_dir, top_k=10):
     d = by_lang.copy()
     d["date"] = pd.to_datetime(d["date"])
-    # Keep top-k languages by total tweet volume.
     vol = d.groupby("language")["n_tweets"].sum().sort_values(ascending=False)
     keep = vol.head(top_k).index.tolist()
     d = d[d["language"].isin(keep)]
     pivot = d.pivot_table(index="language", columns="date",
                           values="mean_compound", aggfunc="mean")
     pivot = pivot.reindex(keep)
-    # Resample to weeks for legibility if > ~60 columns.
     if pivot.shape[1] > 60:
         pivot.columns = pd.to_datetime(pivot.columns)
         pivot = pivot.T.resample("W").mean().T

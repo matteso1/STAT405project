@@ -1,13 +1,10 @@
 #!/bin/bash
-# download.sh -- one-shot Kaggle dataset download, run as a Condor job.
-# Streams the zip straight to /staging with curl; tiny memory footprint.
-# (Kaggle's Python SDK buffers the whole response and OOMs on 16GB.)
+# Download the Kaggle dataset zip into /staging via curl.
+# (Kaggle's Python SDK OOMs even at 16GB; curl streams it.)
 set -euo pipefail
 
 chmod 600 kaggle.json
 
-# Kaggle's dataset-download endpoint takes HTTP Basic auth with
-# username:key from kaggle.json.
 AUTH=$(python3 - <<'PYEOF'
 import json, base64
 c = json.load(open("kaggle.json"))

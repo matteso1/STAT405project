@@ -1,10 +1,5 @@
-# Apptainer definition for the sentiment scoring container.
-# Build on learn.chtc.wisc.edu with:
-#     apptainer build stat405_vader.sif container.def
-# Then upload to /staging/nomatteson/ and reference
-# it from score.sub via
-#     container_image = file:///staging/nomatteson/stat405_vader.sif
-
+# Apptainer container: python + pandas + vaderSentiment.
+# Build with: apptainer build stat405_vader.sif container.def
 Bootstrap: docker
 From: python:3.11-slim
 

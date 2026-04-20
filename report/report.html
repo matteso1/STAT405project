@@ -90,7 +90,7 @@ th { background: #f6f6f6; }
 <body>
 <header id="title-block-header">
 <h1 class="title">Does Twitter feel the war in real time?</h1>
-<p class="subtitle">VADER sentiment vs. major Russia–Ukraine events at
+<p class="subtitle">VADER sentiment vs. major Russia-Ukraine events at
 CHTC scale</p>
 <p class="author">Calvin Sharpe · Nils Matteson · Pravin Schmidley ·
 Will Tappa · Yash Rajani</p>
@@ -98,7 +98,7 @@ Will Tappa · Yash Rajani</p>
 </header>
 <h2 id="introduction">Introduction</h2>
 <p>We asked whether the sentiment of public tweets shifts when a major
-Russia–Ukraine war event happens, how sharply, and how quickly it
+Russia-Ukraine war event happens, how sharply, and how quickly it
 decays. We scored ≈20 GB of tweets from the Kaggle
 <code>bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows</code>
 on CHTC with one HTCondor job per daily CSV (≈200 parallel jobs), then
@@ -112,7 +112,7 @@ first two without being told.</p>
 <h2 id="data-computation-and-results">Data, computation, and
 results</h2>
 <p><strong>Data.</strong> The dataset comprises ≈200 daily CSV files (50
-MB–2 GB each; ≈20 GB total), Feb 2022 – mid-2024. We used five columns:
+MB-2 GB each; ≈20 GB total), Feb 2022 - mid-2024. We used five columns:
 <code>text</code>, <code>tweetcreatedts</code>, <code>language</code>,
 <code>retweetcount</code>, <code>followers</code>. Cleaning was minimal:
 rows with empty text or an unparseable timestamp were dropped (≈1.8%
@@ -138,7 +138,7 @@ never left <code>/staging</code> (per course protocol).</p>
 mean, with events and change-points</figcaption>
 </figure>
 <p>The invasion, Bucha revelation, and Azovstal surrender each drive the
-rolling mean negative by 0.15–0.25 for 5–10 days; Kherson’s liberation
+rolling mean negative by 0.15-0.25 for 5-10 days; Kherson’s liberation
 is the only event with a clean positive spike. Change-point dates align
 with 6 of the 24 annotated events within ±3 days.</p>
 <figure>
@@ -151,7 +151,7 @@ linear-trend controls yields <em>R</em>² ≈ 0.41 (<em>n</em> = 365 days).
 Invasion (β = −0.29, <em>p</em> &lt; 10⁻¹⁶) and Bucha (β = −0.28,
 <em>p</em> &lt; 10⁻¹⁶) are the strongest negatives; Kherson liberation
 is positive (β = +0.11, <em>p</em> &lt; 10⁻³). Reach-weighting by
-follower count shifts the curve but not its sign — the loudest accounts
+follower count shifts the curve but not its sign , the loudest accounts
 track the median.</p>
 <p><strong>Weaknesses.</strong> (i) VADER is English-only, so
 non-English tweets look falsely neutral; we report the multilingual pool
@@ -161,8 +161,8 @@ dummy coefficients are not clean causal effects. (iv) No bot filter:
 coordinated amplification can move daily means without public sentiment
 actually shifting.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>The signal is there — major war events do move daily sentiment on
-English Twitter, by multiples of its day-to-day standard deviation — but
+<p>The signal is there , major war events do move daily sentiment on
+English Twitter, by multiples of its day-to-day standard deviation , but
 only a handful of events are crisp enough for the change-point detector
 to spot unaided. Future work: multilingual VADER-equivalent (e.g., XLM-R
 sentiment), an account-activity bot filter, and a
@@ -218,7 +218,7 @@ dummy.</p>
 </tbody>
 </table>
 <p><em>Leave blank cells to be filled per actual contribution after
-presentation rehearsal; 1 = full, 0.1–0.9 partial, 0 = none.</em></p>
+presentation rehearsal; 1 = full, 0.1-0.9 partial, 0 = none.</em></p>
 <h3 id="how-to-reproduce">How to reproduce</h3>
 <pre><code>git clone https://github.com/matteso1/STAT405project.git
 cd STAT405project/chtc

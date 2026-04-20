@@ -1,12 +1,8 @@
 #!/bin/bash
-# download_and_chunk.sh -- pull the full Kaggle dataset and pack the
-# 293 daily CSVs into ~25 multi-day chunks before they ever land as
-# separate files on /staging.
-#
-# /staging/nomatteson has a 100-inode cap; storing 293 individual CSVs
-# blows past it. Each chunk concatenates 12 daily CSVs (one shared
-# header + their bodies). score_tweets.py groups by date internally,
-# so chunked input produces the same downstream aggregates.
+# Download the Kaggle zip and pack daily CSVs into multi-day chunks.
+# /staging caps us at 100 inodes per user, so we can't keep ~300
+# individual daily files. score_tweets.py groups by date internally,
+# so chunked input gives the same aggregates.
 set -euo pipefail
 
 chmod 600 kaggle.json
@@ -36,7 +32,7 @@ import zipfile, os, shutil
 
 SRC = "${DATA}/dataset.zip"
 OUT = "${DATA}"
-CHUNK = 12  # daily CSVs per chunk -> 293/12 = ~25 chunks
+CHUNK = 12
 
 with zipfile.ZipFile(SRC) as z:
     members = sorted(m for m in z.namelist() if m.endswith('.csv'))
@@ -51,7 +47,7 @@ with zipfile.ZipFile(SRC) as z:
             for j, name in enumerate(batch):
                 with z.open(name) as src_f:
                     if j > 0:
-                        src_f.readline()  # drop header in subsequent files
+                        src_f.readline()
                     shutil.copyfileobj(src_f, out, length=4 * 1024 * 1024)
         sz = os.path.getsize(chunk_path) / (1024 ** 3)
         print(f"  chunk_{idx:03d}.csv  {sz:.2f} GB  ({len(batch)} files)")

@@ -1,17 +1,6 @@
 #!/usr/bin/env python3
-"""
-html_to_pdf.py: Render an HTML file to PDF via headless Chromium.
-
-Used to produce `presentation.pdf` (from revealjs) and `report.pdf`
-(from the plain-HTML report) without needing LaTeX. Playwright's
-chromium-headless-shell downloads itself into the user cache on first
-run, so no sudo is required.
-
-Usage:
-    python html_to_pdf.py INPUT.html OUTPUT.pdf [--reveal] \
-        [--format Letter|A4] [--landscape]
-"""
-from __future__ import annotations
+# Render HTML to PDF with headless Chromium (Playwright). Used for
+# presentation.pdf and report.pdf since we don't have LaTeX set up.
 
 import argparse
 import os
@@ -23,8 +12,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("input")
     p.add_argument("output")
-    p.add_argument("--reveal", action="store_true",
-                   help="Load with ?print-pdf query (revealjs print mode).")
+    p.add_argument("--reveal", action="store_true")
     p.add_argument("--format", default="Letter")
     p.add_argument("--landscape", action="store_true")
     p.add_argument("--margin", default="0.4in")
@@ -44,8 +32,6 @@ def main():
         ctx = browser.new_context()
         page = ctx.new_page()
         page.goto(url, wait_until="networkidle")
-        # Let fonts and images settle. revealjs also needs a moment to build
-        # the print layout once we've passed ?print-pdf.
         page.wait_for_timeout(1500)
         pdf_bytes = page.pdf(
             format=args.format,

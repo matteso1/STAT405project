@@ -1,17 +1,6 @@
-# score.sub -- submit parallel VADER scoring jobs, one per daily CSV.
-#
-# Before running:
-#   1. Build or upload the Apptainer image to /staging/nomatteson/
-#   2. Place the raw CSV files under the same /staging path (see chtc/README.md)
-#   3. Generate file_list.txt listing the CSV filenames (no directories):
-#          ls /staging/nomatteson/data/*.csv | xargs -n1 basename > file_list.txt
-#   4. mkdir -p log error output
-# Submit with:
-#       condor_submit score.sub
-
+# Parallel VADER scoring, one job per chunk CSV.
 universe      = vanilla
 
-# Container image holds Python + pandas + vaderSentiment (see container.def).
 container_image = file:///staging/nomatteson/stat405_vader.sif
 requirements    = (HasCHTCStaging == true)
 
@@ -22,19 +11,14 @@ output = output/$(Cluster)_$(Process).out
 executable    = run_score.sh
 arguments     = $(file)
 
-# The input CSV is shipped from /staging by reference (file:///...).
-# score_tweets.py is a small script shipped from the submit dir.
 should_transfer_files    = YES
 when_to_transfer_output  = ON_EXIT
 transfer_input_files     = score_tweets.py, file:///staging/nomatteson/data/$(file)
 
-# Sized for a ~2GB chunk (12 daily CSVs concatenated). Adjust after
-# the 1-job calibration run (see chtc/README.md, step 5).
 request_cpus   = 1
 request_memory = 6GB
 request_disk   = 8GB
 
-# Retry only on transient failures; a code bug should fail loud.
 max_retries    = 2
 
 queue file from file_list.txt

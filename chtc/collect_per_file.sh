@@ -1,7 +1,6 @@
 #!/bin/bash
-# collect_per_file.sh -- DAG POST script for the score stage.
-# Moves the per-job *_agg.csv outputs into per_file/ so the aggregate
-# job can ship them as a single directory via transfer_input_files.
+# DAG POST script: move per-job *_agg.csv files into per_file/ so the
+# aggregate job can ship them as one directory.
 set -euo pipefail
 mkdir -p per_file
 shopt -s nullglob

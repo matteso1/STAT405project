@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-"""
-run_local_parallel.py: Score every CSV in data/kaggle_raw/ with
-score_tweets.py, using a process pool. Emits per-file summary CSVs to
-results/scored/. Equivalent in effect to what the CHTC queue would do,
-just fanned out across local cores.
-"""
-from __future__ import annotations
+# Local stand-in for the CHTC scoring step: run score_tweets.py on every
+# CSV in data/kaggle_raw/ across a process pool.
 
 import argparse
 import multiprocessing as mp

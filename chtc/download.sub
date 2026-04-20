@@ -1,13 +1,4 @@
-# download.sub -- run the Kaggle download on a worker, not the login node.
-#
-# Submit with:
-#     condor_submit download.sub
-# Monitor with condor_watch_q; exit Ctrl-C when it disappears.
-# Logs land in download.{log,out,err}.
-#
-# Writes to /staging/nomatteson/data/. After it finishes, re-run
-# setup_on_learn.sh (which skips the download step when data/ is full).
-
+# Kaggle download as a Condor job (the login node OOMs).
 universe       = vanilla
 executable     = download.sh
 
@@ -17,8 +8,6 @@ error  = download.err
 
 should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT
-# Ship the Kaggle API token to the worker. download.sh points the
-# kaggle CLI at this file via KAGGLE_CONFIG_DIR=$PWD.
 transfer_input_files    = $ENV(HOME)/.kaggle/kaggle.json
 
 request_cpus   = 1

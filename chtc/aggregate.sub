@@ -1,8 +1,4 @@
-# aggregate.sub -- single job that combines every per-file output CSV
-# into daily_pooled.csv and daily_by_language.csv, then runs the
-# change-point + regression analysis. Fast (a few seconds) but we
-# submit it as a Condor job so the whole pipeline can be a single DAG.
-
+# Aggregate stage: combine per-file CSVs and run analysis.
 universe      = vanilla
 
 container_image = file:///staging/nomatteson/stat405_vader.sif

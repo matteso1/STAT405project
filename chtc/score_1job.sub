@@ -1,7 +1,4 @@
-# score_1job.sub -- calibration run: one job on one file, so we can
-# measure CPU/memory/disk usage before submitting hundreds in parallel.
-# (Same shape as HW4a's hw4_1job.sub.)
-
+# Calibration: one job on one chunk before launching the full DAG.
 universe      = vanilla
 
 container_image = file:///staging/nomatteson/stat405_vader.sif
@@ -12,7 +9,6 @@ error  =  error/$(Cluster)_1job.err
 output = output/$(Cluster)_1job.out
 
 executable = run_score.sh
-# Calibration runs the first multi-day chunk (~2 GB, ~12 daily CSVs).
 arguments  = chunk_000.csv
 
 should_transfer_files    = YES
