@@ -24,7 +24,7 @@ detection against a curated timeline of 21 major war events.
 
 -   **Kaggle**: `bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows`
 -   ~480 daily CSVs, packed into 39 multi-day chunks on CHTC
--   **~52 GB total**, Feb 2022 to mid-2024
+-   **~52 GB total**, Feb 2022 to June 2023
 -   After scoring: **70,876,101 tweets across 476 days**
 -   Columns used: `text`, `tweetcreatedts`, `language`,
     `retweetcount`, `followers`
@@ -75,7 +75,7 @@ Three analyses on the daily time series:
 ![](01_sentiment_timeline.png){width=85%}
 
 ::: {style="font-size:0.55em; color:#666;"}
-Blue = 7-day rolling mean (English); dashed = annotated events; red = PELT change-points. Daily mean drifts around -0.05 to -0.10; deepest dips around Bucha (Apr 2022) and Bakhmut (spring 2023).
+Blue = 7-day rolling mean (English); dashed = annotated events; red = PELT change-points. Daily mean drifts between -0.05 and -0.15; shorter dip at Bucha (Apr 2022), deepest excursion during Bakhmut period (spring 2023).
 :::
 
 ---

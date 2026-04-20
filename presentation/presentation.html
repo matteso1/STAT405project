@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.3.1/dist/reset.css">
-  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.3.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4/dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4/dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
       overflow: visible;
@@ -97,7 +97,7 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.3.1/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4/dist/theme/black.css" id="theme">
   <link rel="stylesheet" href="custom.css"/>
 </head>
 <body>
@@ -131,7 +131,7 @@ detection against a curated timeline of 21 major war events.</p>
 <li><strong>Kaggle</strong>:
 <code>bwandowando/ukraine-russian-crisis-twitter-dataset-1-2-m-rows</code></li>
 <li>~480 daily CSVs, packed into 39 multi-day chunks on CHTC</li>
-<li><strong>~52 GB total</strong>, Feb 2022 to mid-2024</li>
+<li><strong>~52 GB total</strong>, Feb 2022 to June 2023</li>
 <li>After scoring: <strong>70,876,101 tweets across 476
 days</strong></li>
 <li>Columns used: <code>text</code>, <code>tweetcreatedts</code>,
@@ -184,8 +184,9 @@ compound.</li>
 <p><img data-src="01_sentiment_timeline.png" style="width:85.0%" /></p>
 <div style="font-size:0.55em; color:#666;">
 <p>Blue = 7-day rolling mean (English); dashed = annotated events; red =
-PELT change-points. Daily mean drifts around -0.05 to -0.10; deepest
-dips around Bucha (Apr 2022) and Bakhmut (spring 2023).</p>
+PELT change-points. Daily mean drifts between -0.05 and -0.15; shorter
+dip at Bucha (Apr 2022), deepest excursion during Bakhmut period (spring
+2023).</p>
 </div>
 </section>
 <section id="result-2-event-study" class="slide level2">
@@ -267,12 +268,12 @@ RDD around each event.</p>
     </div>
   </div>
 
-  <script src="https://unpkg.com/reveal.js@4.3.1/dist/reveal.js"></script>
+  <script src="https://unpkg.com/reveal.js@4/dist/reveal.js"></script>
 
   <!-- reveal.js plugins -->
-  <script src="https://unpkg.com/reveal.js@4.3.1/plugin/notes/notes.js"></script>
-  <script src="https://unpkg.com/reveal.js@4.3.1/plugin/search/search.js"></script>
-  <script src="https://unpkg.com/reveal.js@4.3.1/plugin/zoom/zoom.js"></script>
+  <script src="https://unpkg.com/reveal.js@4/plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@4/plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@4/plugin/zoom/zoom.js"></script>
 
   <script>
 
