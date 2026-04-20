@@ -24,8 +24,8 @@ only one matches a labeled event.
 **Data.** 480 daily CSVs (~52 GB), Feb 2022 to June 2023. Columns:
 `text`, `tweetcreatedts`, `language`, `retweetcount`, `followers`.
 Rows with empty text or bad timestamps dropped (<2%). After
-scoring: 70,876,101 tweets across 476 days. Primary results pool
-English because VADER is English-trained.
+scoring: 70,876,101 tweets over 476 days. Primary pool is English
+(VADER is English-trained).
 
 **Computation.** An Apptainer container (pandas + vaderSentiment,
 ~340 MB) was staged to `/staging/nomatteson/`. Because `/staging`
@@ -35,8 +35,7 @@ chunks. For each chunk, `score_tweets.py` streams the file in
 (date, language) with sums of compound, compound², pos/neg/neu,
 followers, and followers×compound — sufficient statistics, so the
 aggregator never re-reads raw tweets. **Per job:** 1 CPU, ~1.2 GB
-RAM, 8 GB disk. Calibration chunk (419 MB) ran in 7 min; largest
-chunks (~3.2 GB) took ~50 min. **Total:** 39 parallel jobs,
+RAM, 8 GB disk; chunks took 7-50 min. **Total:** 39 parallel jobs,
 ~1h40min wall-clock. Raw tweets never left `/staging`.
 
 **Results.**
@@ -55,12 +54,11 @@ Kharkiv counteroffensive (+0.04, *t* = 2.7), annexation declared
 The OLS regression
 (`mean_compound ~ t + log(n_tweets) + 17 event dummies`, *n* = 476)
 gives *R*² = 0.09, *F* = 2.4 (*p* = 0.0007). Four coefficients
-clear |*t*| > 2: Kherson liberated (*β* = +0.12, *p* = 0.006),
-Kakhovka dam (*β* = -0.11, *p* = 0.02), anniversary (+0.09,
-*p* = 0.04), Zelensky at Congress (+0.09, *p* = 0.04). PELT flags
-21 breaks; only 2022-12-21 (Zelensky at Congress) aligns with a
-labeled event. Reach-weighting by follower count shifts amplitude
-but not sign.
+clear |*t*| > 2: Kherson liberated (+0.12, *p* = 0.006), Kakhovka
+dam (-0.11, *p* = 0.02), anniversary (+0.09, *p* = 0.04),
+Zelensky at Congress (+0.09, *p* = 0.04). PELT flags 21 breaks;
+only 2022-12-21 (Zelensky) aligns with a labeled event.
+Reach-weighting shifts amplitude but not sign.
 
 **Weaknesses.** (i) VADER is English-only; non-English tweets
 look falsely neutral. (ii) Twitter users are not the public.
@@ -82,11 +80,11 @@ regression-discontinuity around each event.
 
 | Member | Proposal | Coding | Presentation | Report |
 |---|:-:|:-:|:-:|:-:|
-| Calvin Sharpe | | | | |
+| Calvin Sharpe | 0 | 0 | 0 | 0 |
 | Nils Matteson | 1 | 1 | 1 | 1 |
-| Pravin Schmidley | | | | |
-| Will Tappa | | | | |
-| Yash Rajani | | | | |
+| Pravin Schmidley | 0.3 | 0.1 | 0.3 | 0.1 |
+| Will Tappa | 0.3 | 0.2 | 0.3 | 0.1 |
+| Yash Rajani | 0 | 0 | 0 | 0 |
 
 *1 = full, 0.1-0.9 = partial, 0 = none.*
 

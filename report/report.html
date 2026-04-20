@@ -199,8 +199,8 @@ labeled event.</p>
 2023. Columns: <code>text</code>, <code>tweetcreatedts</code>,
 <code>language</code>, <code>retweetcount</code>,
 <code>followers</code>. Rows with empty text or bad timestamps dropped
-(&lt;2%). After scoring: 70,876,101 tweets across 476 days. Primary
-results pool English because VADER is English-trained.</p>
+(&lt;2%). After scoring: 70,876,101 tweets over 476 days. Primary pool
+is English (VADER is English-trained).</p>
 <p><strong>Computation.</strong> An Apptainer container (pandas +
 vaderSentiment, ~340 MB) was staged to
 <code>/staging/nomatteson/</code>. Because <code>/staging</code> caps
@@ -210,9 +210,8 @@ blocks, runs VADER per tweet, and emits one row per (date, language)
 with sums of compound, compound², pos/neg/neu, followers, and
 followers×compound — sufficient statistics, so the aggregator never
 re-reads raw tweets. <strong>Per job:</strong> 1 CPU, ~1.2 GB RAM, 8 GB
-disk. Calibration chunk (419 MB) ran in 7 min; largest chunks (~3.2 GB)
-took ~50 min. <strong>Total:</strong> 39 parallel jobs, ~1h40min
-wall-clock. Raw tweets never left <code>/staging</code>.</p>
+disk; chunks took 7-50 min. <strong>Total:</strong> 39 parallel jobs,
+~1h40min wall-clock. Raw tweets never left <code>/staging</code>.</p>
 <p><strong>Results.</strong></p>
 <figure>
 <img src="../figures/01_sentiment_timeline.png" style="width:100.0%"
@@ -236,12 +235,11 @@ windows</figcaption>
 (<code>mean_compound ~ t + log(n_tweets) + 17 event dummies</code>,
 <em>n</em> = 476) gives <em>R</em>² = 0.09, <em>F</em> = 2.4 (<em>p</em>
 = 0.0007). Four coefficients clear |<em>t</em>| &gt; 2: Kherson
-liberated (<em>β</em> = +0.12, <em>p</em> = 0.006), Kakhovka dam
-(<em>β</em> = -0.11, <em>p</em> = 0.02), anniversary (+0.09, <em>p</em>
-= 0.04), Zelensky at Congress (+0.09, <em>p</em> = 0.04). PELT flags 21
-breaks; only 2022-12-21 (Zelensky at Congress) aligns with a labeled
-event. Reach-weighting by follower count shifts amplitude but not
-sign.</p>
+liberated (+0.12, <em>p</em> = 0.006), Kakhovka dam (-0.11, <em>p</em> =
+0.02), anniversary (+0.09, <em>p</em> = 0.04), Zelensky at Congress
+(+0.09, <em>p</em> = 0.04). PELT flags 21 breaks; only 2022-12-21
+(Zelensky) aligns with a labeled event. Reach-weighting shifts amplitude
+but not sign.</p>
 <p><strong>Weaknesses.</strong> (i) VADER is English-only; non-English
 tweets look falsely neutral. (ii) Twitter users are not the public.
 (iii) Durbin-Watson = 0.70 means autocorrelation understates OLS
@@ -269,10 +267,10 @@ regression-discontinuity around each event.</p>
 <tbody>
 <tr>
 <td>Calvin Sharpe</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
 </tr>
 <tr>
 <td>Nils Matteson</td>
@@ -283,24 +281,24 @@ regression-discontinuity around each event.</p>
 </tr>
 <tr>
 <td>Pravin Schmidley</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.1</td>
 </tr>
 <tr>
 <td>Will Tappa</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.1</td>
 </tr>
 <tr>
 <td>Yash Rajani</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
 </tr>
 </tbody>
 </table>
