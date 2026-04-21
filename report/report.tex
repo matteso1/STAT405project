@@ -5,18 +5,22 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{caption}
-\usepackage{hyperref}
+\usepackage[hyphens]{url}
+\usepackage[breaklinks=true]{hyperref}
+\usepackage{xurl}
 \usepackage{xcolor}
 \usepackage{parskip}
 \usepackage{textcomp}
 
-\graphicspath{{../figures/}}
+\graphicspath{{../figures/}{./figures/}{./}}
 
 \hypersetup{
   colorlinks=true,
   urlcolor=blue,
   linkcolor=black
 }
+
+\emergencystretch=3em
 
 \title{Does Twitter feel the war in real time?\\
        \large VADER sentiment vs. Russia--Ukraine war events at CHTC scale}
@@ -31,7 +35,7 @@
 We ask whether public tweet sentiment shifts when a major
 Russia--Ukraine war event happens. We scored \textbf{70.9 million tweets}
 ($\sim$52\,GB) from the Kaggle
-\texttt{bwandowando/ukraine-russian-crisis-twitter-dataset} on CHTC
+\path{bwandowando/ukraine-russian-crisis-twitter-dataset} on CHTC
 with HTCondor, then ran three analyses against 21 curated events:
 Welch \textit{t}-tests, PELT change-point detection, and OLS
 regression on event dummies with controls. The model explains
@@ -129,7 +133,6 @@ Will Tappa       & 1 & 1 & 1 & 1 \\
 \noindent\textit{1 = full, 0.1--0.9 = partial, 0 = none.}
 
 \vspace{0.5em}
-\noindent Clone:
-\texttt{git clone https://github.com/matteso1/STAT405project.git}
+\noindent Clone: \url{https://github.com/matteso1/STAT405project.git}
 
 \end{document}
