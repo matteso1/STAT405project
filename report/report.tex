@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage[margin=1in]{geometry}
-\usepackage{graphicx}
+\usepackage[final]{graphicx}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{caption}
@@ -35,7 +35,8 @@
 We ask whether public tweet sentiment shifts when a major
 Russia--Ukraine war event happens. We scored \textbf{70.9 million tweets}
 ($\sim$52\,GB) from the Kaggle
-\path{bwandowando/ukraine-russian-crisis-twitter-dataset} on CHTC
+\texttt{bwandowando/\allowbreak ukraine-\allowbreak russian-\allowbreak crisis-\allowbreak twitter-\allowbreak dataset}
+on CHTC
 with HTCondor, then ran three analyses against 21 curated events:
 Welch \textit{t}-tests, PELT change-point detection, and OLS
 regression on event dummies with controls. The model explains
