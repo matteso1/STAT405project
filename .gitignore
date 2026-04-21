@@ -12,10 +12,7 @@ data/
 results/
 !results/.gitkeep
 
-# Figures (intermediate; checked-in versions go in report/ and presentation/)
-figures/*.png
-figures/*.pdf
-!figures/.gitkeep
+# Figures are committed (single source of truth for report + presentation)
 
 # CHTC job outputs (recreated each run)
 chtc/log/

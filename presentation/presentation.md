@@ -1,7 +1,7 @@
 ---
 title: "Does Twitter feel the war in real time?"
 subtitle: "VADER sentiment vs. Russia-Ukraine war events at CHTC scale"
-author: "Calvin Sharpe, Nils Matteson, Pravin Schmidley, Will Tappa, Yash Rajani"
+author: "Nils Matteson, Pravin Schmidley, Will Tappa"
 date: "STAT 405 / DSCP, April 2026"
 ---
 
@@ -72,7 +72,7 @@ Three analyses on the daily time series:
 
 ## Result 1: sentiment timeline
 
-![](01_sentiment_timeline.png){width=85%}
+![](../figures/01_sentiment_timeline.png){width=85%}
 
 ::: {style="font-size:0.55em; color:#666;"}
 Blue = 7-day rolling mean (English); dashed = annotated events; red = PELT change-points. Daily mean drifts between -0.05 and -0.15; shorter dip at Bucha (Apr 2022), deepest excursion during Bakhmut period (spring 2023).
@@ -82,7 +82,7 @@ Blue = 7-day rolling mean (English); dashed = annotated events; red = PELT chang
 
 ## Result 2: event study
 
-![](02_event_study.png){width=80%}
+![](../figures/02_event_study.png){width=80%}
 
 ::: {style="font-size:0.55em; color:#666;"}
 3 of 16 events pass |t| > 2: **Kharkiv counter-offensive** (+0.036, t=2.65), **Annexation declared** (+0.023, t=2.41), **Bucha revealed** (-0.076, t=-2.25).
@@ -109,7 +109,7 @@ Blue = 7-day rolling mean (English); dashed = annotated events; red = PELT chang
 
 ## Result 4: reach weighting
 
-![](05_reach_weighted.png){width=85%}
+![](../figures/05_reach_weighted.png){width=85%}
 
 ::: {style="font-size:0.55em; color:#666;"}
 Follower-weighting shifts amplitude, not sign: loudest accounts mirror the median tweeter.

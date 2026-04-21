@@ -1,0 +1,135 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{textcomp}
+
+\graphicspath{{../figures/}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  linkcolor=black
+}
+
+\title{Does Twitter feel the war in real time?\\
+       \large VADER sentiment vs. Russia--Ukraine war events at CHTC scale}
+\author{Nils Matteson \and Pravin Schmidley \and Will Tappa}
+\date{STAT 405 / DSCP, April 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+
+We ask whether public tweet sentiment shifts when a major
+Russia--Ukraine war event happens. We scored \textbf{70.9 million tweets}
+($\sim$52\,GB) from the Kaggle
+\texttt{bwandowando/ukraine-russian-crisis-twitter-dataset} on CHTC
+with HTCondor, then ran three analyses against 21 curated events:
+Welch \textit{t}-tests, PELT change-point detection, and OLS
+regression on event dummies with controls. The model explains
+$\sim$9\% of daily variance ($R^2 = 0.09$, $F = 2.4$,
+$p = 0.0007$); strongest effects are \textbf{Kherson liberated}
+($\beta = +0.12$, $p = 0.006$) and \textbf{Kakhovka dam}
+($\beta = -0.11$, $p = 0.02$). PELT flags 21 breaks; only one
+matches a labeled event.
+
+\section*{Data, computation, results}
+
+\textbf{Data.} 480 daily CSVs ($\sim$52\,GB), Feb 2022 to June 2023.
+Columns: \texttt{text}, \texttt{tweetcreatedts}, \texttt{language},
+\texttt{retweetcount}, \texttt{followers}. Rows with empty text or
+bad timestamps dropped ($<$2\%). After scoring: 70{,}876{,}101
+tweets over 476 days. Primary pool is English (VADER is
+English-trained).
+
+\textbf{Computation.} An Apptainer container (pandas +
+vaderSentiment, $\sim$340\,MB) was staged to
+\texttt{/staging/nomatteson/}. Because \texttt{/staging} caps
+users at 100 inodes, we packed the CSVs into 39 multi-day chunks.
+For each chunk, \texttt{score\_tweets.py} streams the file in
+200k-row blocks, runs VADER per tweet, and emits one row per
+(date, language) with sums of compound, compound$^2$,
+pos/neg/neu, followers, and followers$\times$compound --- sufficient
+statistics, so the aggregator never re-reads raw tweets.
+\textbf{Per job:} 1 CPU, $\sim$1.2\,GB RAM, 8\,GB disk; chunks
+took 7--50\,min. \textbf{Total:} 39 parallel jobs, $\sim$1h40min
+wall-clock. Raw tweets never left \texttt{/staging}.
+
+\textbf{Results.}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{01_sentiment_timeline.png}
+\caption{Daily VADER sentiment with annotated events and detected
+change-points.}
+\end{figure}
+
+English daily mean compound sentiment drifts between $-0.05$ and
+$-0.15$, with shorter negative dips around Bucha (April 2022) and
+the deepest excursion during the Bakhmut period (spring 2023).
+Of the 16 events with full $[-7, +7]$ windows, three pass
+$|t| > 2$: Kharkiv counteroffensive ($+0.04$, $t = 2.7$),
+annexation declared ($+0.02$, $t = 2.4$), and Bucha revealed
+($-0.08$, $t = -2.2$).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{02_event_study.png}
+\caption{Event study: post $-$ pre daily mean, 7-day windows.}
+\end{figure}
+
+The OLS regression
+(\texttt{mean\_compound \textasciitilde\ t + log(n\_tweets) + 17 event dummies},
+$n = 476$) gives $R^2 = 0.09$, $F = 2.4$ ($p = 0.0007$). Four
+coefficients clear $|t| > 2$: Kherson liberated ($+0.12$,
+$p = 0.006$), Kakhovka dam ($-0.11$, $p = 0.02$), anniversary
+($+0.09$, $p = 0.04$), Zelensky at Congress ($+0.09$,
+$p = 0.04$). PELT flags 21 breaks; only 2022-12-21 (Zelensky)
+aligns with a labeled event. Reach-weighting shifts amplitude
+but not sign.
+
+\textbf{Weaknesses.} (i)~VADER is English-only; non-English
+tweets look falsely neutral. (ii)~Twitter users are not the
+public. (iii)~Durbin--Watson $= 0.70$ means autocorrelation
+understates OLS standard errors. (iv)~Events cluster, so dummies
+aren't causal. (v)~No bot filter.
+
+\section*{Conclusion}
+
+War events explain $\sim$9\% of daily variance on English
+Twitter, but a handful register: Kherson's liberation and the
+Kakhovka dam cross $|t| > 2$ with expected sign, and Bucha is
+the clearest single-event dip. Most change-points don't match
+labeled events --- either unlabeled drivers or VADER tracking
+vocabulary drift. Future work: multilingual sentiment (XLM-R),
+a bot filter, and regression-discontinuity around each event.
+
+\subsection*{Contributions}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Member & Proposal & Coding & Presentation & Report \\
+\midrule
+Nils Matteson    & 1 & 1 & 1 & 1 \\
+Pravin Schmidley & 1 & 1 & 1 & 1 \\
+Will Tappa       & 1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textit{1 = full, 0.1--0.9 = partial, 0 = none.}
+
+\vspace{0.5em}
+\noindent Clone:
+\texttt{git clone https://github.com/matteso1/STAT405project.git}
+
+\end{document}
