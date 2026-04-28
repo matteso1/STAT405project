@@ -42,7 +42,7 @@ def save(fig, stem, out_dir):
 
 
 def fig_sentiment_timeline(daily, events, changepoints, out_dir, smooth=7):
-    fig, ax = plt.subplots(figsize=(11, 4.5))
+    fig, ax = plt.subplots(figsize=(12, 7.0))
     d = daily.sort_values("date").copy()
     d["smooth"] = d["mean_compound"].rolling(smooth, center=True, min_periods=1).mean()
     ax.plot(d["date"], d["mean_compound"], color=COLORS["en"],
@@ -50,13 +50,40 @@ def fig_sentiment_timeline(daily, events, changepoints, out_dir, smooth=7):
     ax.plot(d["date"], d["smooth"], color=COLORS["en"], linewidth=2.0,
             label=f"{smooth}-day rolling mean")
     ax.axhline(0, color="black", linewidth=0.5)
-    for ev in events.itertuples(index=False):
-        color = COLORS.get(ev.valence_hint, COLORS["neutral"])
-        ax.axvline(pd.to_datetime(ev.date), color=color, alpha=0.35,
-                   linestyle="--", linewidth=1.0)
+
+    data_min = float(d["mean_compound"].min())
+    data_max = float(d["mean_compound"].max())
+    span = data_max - data_min
+    label_band = span * 1.25
+    ax.set_ylim(data_min - span * 0.05, data_max + label_band)
+
     for cp in changepoints["date"]:
-        ax.axvline(pd.to_datetime(cp), color=COLORS["changepoint"],
-                   alpha=0.65, linewidth=1.3)
+        ax.vlines(pd.to_datetime(cp), data_min - span * 0.05, data_max,
+                  color=COLORS["changepoint"], alpha=0.55, linewidth=1.0)
+
+    events_sorted = events.sort_values("date").reset_index(drop=True)
+    n_levels = 3
+    level = 0
+    last_date = None
+    base_y = data_max + span * 0.05
+    step = span * 0.40
+    for ev in events_sorted.itertuples(index=False):
+        date = pd.to_datetime(ev.date)
+        color = COLORS.get(ev.valence_hint, COLORS["neutral"])
+        if last_date is not None and (date - last_date).days < 22:
+            level = (level + 1) % n_levels
+        else:
+            level = 0
+        y_text = base_y + level * step
+        ax.vlines(date, data_min - span * 0.05, data_max, color=color,
+                  alpha=0.55, linestyles="--", linewidth=1.1)
+        ax.plot([date, date], [data_max, y_text - span * 0.01],
+                color=color, alpha=0.5, linewidth=0.6)
+        ax.text(date, y_text, ev.short, rotation=90,
+                rotation_mode="anchor", ha="left", va="center",
+                fontsize=8, color=color)
+        last_date = date
+
     ax.set_title("Daily VADER sentiment of Russia-Ukraine tweets (English)")
     ax.set_ylabel("mean compound score")
     ax.set_xlabel("date")
@@ -68,10 +95,12 @@ def fig_sentiment_timeline(daily, events, changepoints, out_dir, smooth=7):
                    label="pro-UA narrative event"),
         plt.Line2D([], [], color=COLORS["pro_ru"], linestyle="--",
                    label="pro-RU narrative event"),
+        plt.Line2D([], [], color=COLORS["neutral"], linestyle="--",
+                   label="neutral event"),
         plt.Line2D([], [], color=COLORS["changepoint"],
                    label="detected change-point"),
     ]
-    ax.legend(handles=handles, loc="upper right", framealpha=0.9)
+    ax.legend(handles=handles, loc="lower left", framealpha=0.9, ncol=2)
     return save(fig, "01_sentiment_timeline", out_dir)
 
 
